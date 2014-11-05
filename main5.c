@@ -1,8 +1,10 @@
 //-----------------------------------------------------------------
-// Name:	Coulston
+// Name:	Brian Yarbrough
+// Class:	ECE 382 Section T5, Capt Trimble
+// Start:	Coulston
 // File:	lab5.c
 // Date:	Fall 2014
-// Purp:	Demo the decoding of an IR packet
+// Purp:
 //-----------------------------------------------------------------
 #include <msp430g2553.h>
 #include "start5.h"

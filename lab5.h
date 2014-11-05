@@ -1,5 +1,6 @@
 //-----------------------------------------------------------------
-// Name:	Coulston
+// Name:	Brian Yarbrough
+// Start:	Dr. Coulston
 // File:	lab5.h
 // Date:	Fall 2014
 // Purp:	Include file for the MSP430
@@ -45,12 +46,13 @@ __interrupt void timerOverflow (void);
 #define		minStartPulse		averageStartPulse - 100
 #define		maxStartPulse		averageStartPulse + 100
 
-#define		PWR		0x02FD48B7
-#define		ONE		0x02FD807F
-#define		TWO		0x02FD40BF
-#define		THR		0x02FDC03F
+//buttons on the Hitachi remote
+#define		UP		0x0AF50EF1
+#define		DOWN	0x0AF58E71
+#define		LEFT	0x0AF5CE31
+#define		RIGHT	0x0AF54EB1
 
-#define		VOL_UP	0x02FD58A7
-#define		VOL_DW	0x02FD7887
-#define		CH_UP	0x02FDD827
-#define		CH_DW	0x02FDF807
+#define		CH_UP	0x0AF59867
+#define		CH_DW	0x0AF518E7
+#define		MUTE	0x0AF5D02F
+#define		EXIT	0x0AF508F7
