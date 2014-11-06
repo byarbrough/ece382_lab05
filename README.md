@@ -1,8 +1,11 @@
 ece382_lab05
 ============
 
-Interrupts - "Remote Control Decoding"
+[Interrupts - "Remote Control Decoding"](http://ece382.com/labs/lab5/index.html)
 
+##Day 1
+
+![alt text](https://raw.githubusercontent.com/byarbrough/ece382_lab05/master/irWave.gif "IR Waveform")
 
 | Button |               Code               |    Hex   |
 |--------|:--------------------------------:|:--------:|
