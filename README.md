@@ -19,13 +19,13 @@ ece382_lab05
 | EXIT   | 00001010111101010000100011110111 | 0AF508F7 |
 
 
-|            Pulse            | Duration (ms) | Timer A counts |
-|:---------------------------:|:-------------:|:--------------:|
-| Start   logic 0 half-pulse  |      8.93     |      71440     |
-| Start   logic 1 half-pulse  |      4.42     |      35360     |
-| Data 1   logic 0 half-pulse |     0.495     |      3960      |
-| Data 1   logic 1 half-pulse |      1.61     |      12880     |
-| Data 0   logic 0 half-pulse |     0.620     |      4960      |
-| Data 0   logic 1 half-pulse |     0.620     |      4960      |
-| Stop   logic 0 half-pulse   |     0.616     |      4928      |
-| Stop logic 1 half-pulse     |    infinite   |    infinite    |
+|            Pulse            | Average Duration (ms) | StdDev | Timer A Min | Timer A Max |
+|:---------------------------:|:---------------------:|:------:|:-----------:|:-----------:|
+| Start   logic 0 half-pulse  |          8.90         |  0.03  |    70966    |    71379    |
+| Start   logic 1 half-pulse  |          4.45         |  0.01  |    35462    |    35657    |
+| Data 1   logic 0 half-pulse |          0.48         |  0.03  |     3658    |     4061    |
+| Data 1   logic 1 half-pulse |          1.61         |  0.02  |    12720    |    13040    |
+| Data 0   logic 0 half-pulse |          0.64         |  0.02  |     4920    |     5266    |
+| Data 0   logic 1 half-pulse |          0.64         |  0.02  |     4920    |     5266    |
+| Stop   logic 0 half-pulse   |          0.59         |  0.02  |     4573    |     4935    |
+| Stop   logic 1 half-pulse   |        infinite       |  0.00  |   infinite  |   infinite  |
