@@ -34,11 +34,12 @@ void handlePress(){
 	_disable_interrupt();
 
 	int32 result = 0;
-	int32 setter = 1;
+	int32 setter = 0x80000000;				//1 in the MSB
 
 	char i;
 	for(i = 2; i<34; i++){					//traverse array
 		int16 current = packetData[i];		//current element
+		packetData[i] = 0;					//clear array
 
 		if(current/10 < 100){				//is a zero
 			result &= ~setter;				//clear bit
@@ -47,7 +48,7 @@ void handlePress(){
 			result |= setter;				//set bit
 		}
 
-		setter <<= 1;						//rotate setter
+		setter >>= 1;						//rotate setter
 	}
 
 	switch(result){							//take appropriate action
@@ -58,12 +59,14 @@ void handlePress(){
 		break;
 
 	case LEFT:
+		P1OUT |= (BIT0 | BIT6);
 		break;
 
 	case RIGHT:
 		break;
 
 	}
+
 
 	_enable_interrupt();
 }
