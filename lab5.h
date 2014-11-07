@@ -56,3 +56,5 @@ __interrupt void timerOverflow (void);
 #define		CH_DW	0x0AF518E7
 #define		MUTE	0x0AF5D02F
 #define		EXIT	0x0AF508F7
+
+void handlePress();

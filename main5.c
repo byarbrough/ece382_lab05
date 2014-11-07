@@ -7,7 +7,7 @@
 // Purp:
 //-----------------------------------------------------------------
 #include <msp430g2553.h>
-#include "start5.h"
+#include "lab5.h"
 
 int8	newIrPacket = FALSE;
 int16	packetData[48];
@@ -21,10 +21,53 @@ void main(void) {
 
 	while(1)  {
 		if (packetIndex > 33) {
+			handlePress();
 			packetIndex = 0;
 		} // end if new IR packet arrived
 	} // end infinite loop
 } // end main
+
+
+
+void handlePress(){
+
+	_disable_interrupt();
+
+	int32 result = 0;
+	int32 setter = 1;
+
+	char i;
+	for(i = 2; i<34; i++){					//traverse array
+		int16 current = packetData[i];		//current element
+
+		if(current/10 < 100){				//is a zero
+			result &= ~setter;				//clear bit
+		}
+		else {
+			result |= setter;				//set bit
+		}
+
+		setter <<= 1;						//rotate setter
+	}
+
+	switch(result){							//take appropriate action
+	case UP:
+		break;
+
+	case DOWN:
+		break;
+
+	case LEFT:
+		break;
+
+	case RIGHT:
+		break;
+
+	}
+
+	_enable_interrupt();
+}
+
 
 // -----------------------------------------------------------------------
 // In order to decode IR packets, the MSP430 needs to be configured to
