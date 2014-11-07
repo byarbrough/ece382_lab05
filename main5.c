@@ -9,8 +9,7 @@
 #include <msp430g2553.h>
 #include "lab5.h"
 
-int8	newIrPacket = FALSE;
-int16	packetData[48];
+int16	packetData[34];
 int8	packetIndex = 0;
 
 // -----------------------------------------------------------------------
@@ -18,11 +17,15 @@ int8	packetIndex = 0;
 void main(void) {
 
 	initMSP430();				// Setup MSP to process IR and buttons
+	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
+	P1OUT &= ~(BIT0 | BIT6);			//Turn the LED off
+
 
 	while(1)  {
 		if (packetIndex > 33) {
 			handlePress();
 			packetIndex = 0;
+			initMSP430();
 		} // end if new IR packet arrived
 	} // end infinite loop
 } // end main
@@ -31,7 +34,7 @@ void main(void) {
 
 void handlePress(){
 
-	_disable_interrupt();
+	__disable_interrupt();
 
 	int32 result = 0;
 	int32 setter = 0x80000000;				//1 in the MSB
@@ -53,22 +56,22 @@ void handlePress(){
 
 	switch(result){							//take appropriate action
 	case UP:
+		P1OUT ^= BIT0;
 		break;
 
 	case DOWN:
+		P1OUT ^= BIT6;
 		break;
 
 	case LEFT:
-		P1OUT |= (BIT0 | BIT6);
+		P1OUT ^= (BIT0 | BIT6);
 		break;
 
 	case RIGHT:
+		P1OUT ^= (BIT0 | BIT6);
 		break;
-
 	}
 
-
-	_enable_interrupt();
 }
 
 
@@ -100,8 +103,6 @@ void initMSP430() {
 	P2IE  |= BIT6;						// Enable PORT 2 interrupt on pin change
 
 	HIGH_2_LOW;
-	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
-	P1OUT &= ~(BIT0 | BIT6);			// An turn the LED off
 
 	TA0CCR0 = 0x8000;					// create a 16mS roll-over period
 	TACTL &= ~TAIFG;					// clear flag before enabling interrupts = good practice
@@ -147,10 +148,13 @@ __interrupt void pinChange (void) {
 		case 0:						// !!!!!!!!!NEGATIVE EDGE!!!!!!!!!!
 			pulseDuration = TAR;
 			packetData[packetIndex++] = pulseDuration;
+			TACTL = 0;					//disable Timer A
 			LOW_2_HIGH; 				// Setup pin interrupr on positive edge
 			break;
 
 		case 1:							// !!!!!!!!POSITIVE EDGE!!!!!!!!!!!
+			TACTL &= ~TAIFG;			//reenable timer A
+			TACTL = ID_3 | TASSEL_2 | MC_1;
 			TAR = 0x0000;						// time measurements are based at time 0
 			HIGH_2_LOW; 						// Setup pin interrupr on positive edge
 			break;
@@ -173,5 +177,8 @@ __interrupt void pinChange (void) {
 #pragma vector = TIMER0_A1_VECTOR			// This is from the MSP430G2553.h file
 __interrupt void timerOverflow (void) {
 
-	TACTL &= ~TAIFG;
+	TACTL = 0;				//turn off timerA
+	packetIndex = 0;
+	TACTL &= ~TAIFG;		//clear flag
+
 }
