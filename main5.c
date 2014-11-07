@@ -17,62 +17,13 @@ int8	packetIndex = 0;
 void main(void) {
 
 	initMSP430();				// Setup MSP to process IR and buttons
+	_enable_interrupt();
 	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
 	P1OUT &= ~(BIT0 | BIT6);			//Turn the LED off
 
 
-	while(1)  {
-		if (packetIndex > 33) {
-			handlePress();
-			packetIndex = 0;
-			initMSP430();
-		} // end if new IR packet arrived
-	} // end infinite loop
+	while(1);
 } // end main
-
-
-
-void handlePress(){
-
-	__disable_interrupt();
-
-	int32 result = 0;
-	int32 setter = 0x80000000;				//1 in the MSB
-
-	char i;
-	for(i = 2; i<34; i++){					//traverse array
-		int16 current = packetData[i];		//current element
-		packetData[i] = 0;					//clear array
-
-		if(current/10 < 100){				//is a zero
-			result &= ~setter;				//clear bit
-		}
-		else {
-			result |= setter;				//set bit
-		}
-
-		setter >>= 1;						//rotate setter
-	}
-
-	switch(result){							//take appropriate action
-	case UP:
-		P1OUT ^= BIT0;
-		break;
-
-	case DOWN:
-		P1OUT ^= BIT6;
-		break;
-
-	case LEFT:
-		P1OUT ^= (BIT0 | BIT6);
-		break;
-
-	case RIGHT:
-		P1OUT ^= (BIT0 | BIT6);
-		break;
-	}
-
-}
 
 
 // -----------------------------------------------------------------------
@@ -136,7 +87,6 @@ void initMSP430() {
 // we will turn on the timer and its associated interrupt.
 // -----------------------------------------------------------------------
 #pragma vector = PORT2_VECTOR			// This is from the MSP430G2553.h file
-
 __interrupt void pinChange (void) {
 
 	int8	pin;
@@ -148,17 +98,60 @@ __interrupt void pinChange (void) {
 		case 0:						// !!!!!!!!!NEGATIVE EDGE!!!!!!!!!!
 			pulseDuration = TAR;
 			packetData[packetIndex++] = pulseDuration;
-			TACTL = 0;					//disable Timer A
 			LOW_2_HIGH; 				// Setup pin interrupr on positive edge
 			break;
 
 		case 1:							// !!!!!!!!POSITIVE EDGE!!!!!!!!!!!
-			TACTL &= ~TAIFG;			//reenable timer A
-			TACTL = ID_3 | TASSEL_2 | MC_1;
 			TAR = 0x0000;						// time measurements are based at time 0
 			HIGH_2_LOW; 						// Setup pin interrupr on positive edge
 			break;
 	} // end switch
+
+	if(packetIndex == 34){
+
+		TACTL = 0;								//disable Timer A
+
+		int32 result = 0;
+		int32 setter = 0x80000000;				//1 in the MSB
+
+		char i;
+		for(i = 2; i<34; i++){					//traverse array
+			int16 current = packetData[i];		//current element
+
+			if(current/10 < 100){				//is a zero
+				result &= ~setter;				//clear bit
+			}
+			else {
+				result |= setter;				//set bit
+			}
+			setter >>= 1;						//rotate setter
+			}
+
+		switch(result){							//take appropriate action
+		case UP:
+			P1OUT ^= BIT0;
+			break;
+
+		case DOWN:
+			P1OUT ^= BIT6;
+			break;
+
+		case LEFT:
+			P1OUT ^= (BIT0 | BIT6);
+			break;
+
+		case RIGHT:
+			P1OUT ^= (BIT0 | BIT6);
+			break;
+		}
+
+		int16 idle = 0;
+		while(idle < 0xFFF){
+			idle++;
+		}
+		initMSP430();
+		packetIndex = 0;
+	}
 
 	P2IFG &= ~BIT6;			// Clear the interrupt flag to prevent immediate ISR re-entry
 
@@ -177,7 +170,6 @@ __interrupt void pinChange (void) {
 #pragma vector = TIMER0_A1_VECTOR			// This is from the MSP430G2553.h file
 __interrupt void timerOverflow (void) {
 
-	TACTL = 0;				//turn off timerA
 	packetIndex = 0;
 	TACTL &= ~TAIFG;		//clear flag
 
