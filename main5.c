@@ -145,10 +145,6 @@ __interrupt void pinChange (void) {
 			break;
 		}
 
-		int16 idle = 0;
-		while(idle < 0xFFF){
-			idle++;
-		}
 		initMSP430();
 		packetIndex = 0;
 	}
@@ -170,6 +166,8 @@ __interrupt void pinChange (void) {
 #pragma vector = TIMER0_A1_VECTOR			// This is from the MSP430G2553.h file
 __interrupt void timerOverflow (void) {
 
+	TACTL = 0;
+	TACTL ^= TAIE;			//toggle interrupt enable
 	packetIndex = 0;
 	TACTL &= ~TAIFG;		//clear flag
 
