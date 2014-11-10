@@ -25,41 +25,42 @@ void main(void) {
 	while(1){
 		if(packetIndex == 34){
 
-		int32 result = 0;
-		int32 setter = 0x80000000;				//1 in the MSB
+			_disable_interrupt();
+			int32 result = 0;
+			int32 setter = 0x80000000;				//1 in the MSB
 
-		char i;
-		for(i = 2; i<34; i++){					//traverse array
-			int16 current = packetData[i];		//current element
+			char i;
+			for(i = 2; i<34; i++){					//traverse array
+				int16 current = packetData[i];		//current element
+				packetData[0] = 0;					//clear element
 
-			if(current/10 < 100){				//is a zero
-				result &= ~setter;				//clear bit
+				if(current/10 < 100){				//is a zero
+					result &= ~setter;				//clear bit
+				}
+				else {
+					result |= setter;				//set bit
+				}
+				setter >>= 1;						//rotate setter
+				}
+
+			switch(result){							//take appropriate action
+			case UP:
+				P1OUT ^= BIT0;
+				break;
+
+			case DOWN:
+				P1OUT ^= BIT6;
+				break;
+
+			case LEFT:
+				P1OUT ^= (BIT0 | BIT6);
+				break;
+
+			case RIGHT:
+				P1OUT ^= (BIT0 | BIT6);
+				break;
 			}
-			else {
-				result |= setter;				//set bit
-			}
-			setter >>= 1;						//rotate setter
-			}
-
-		switch(result){							//take appropriate action
-		case UP:
-			P1OUT ^= BIT0;
-			break;
-
-		case DOWN:
-			P1OUT ^= BIT6;
-			break;
-
-		case LEFT:
-			P1OUT ^= (BIT0 | BIT6);
-			break;
-
-		case RIGHT:
-			P1OUT ^= (BIT0 | BIT6);
-			break;
-		}
-
-		initMSP430();
+			_enable_interrupt();
 		}
 	}
 } // end main
@@ -93,10 +94,12 @@ void initMSP430() {
 	P2IE  |= BIT6;						// Enable PORT 2 interrupt on pin change
 
 	HIGH_2_LOW;
+	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
+	P1OUT &= ~(BIT0 | BIT6);			// An turn the LED off
 
-	TA0CCR0 = 0xFF00;					// create a 16mS roll-over period
+	TA0CCR0 = 0xFFFF;					// create a  roll-over period
 	TACTL &= ~TAIFG;					// clear flag before enabling interrupts = good practice
-	TACTL = ID_3 | TASSEL_2 | MC_1;		// Use 1:1 presclar off MCLK and enable interrupts
+	TACTL = ID_3 | TASSEL_2 | MC_1 | TAIE;		// Use 1:1 presclar off MCLK and enable interrupts
 
 	_enable_interrupt();
 }
@@ -145,7 +148,7 @@ __interrupt void pinChange (void) {
 			TAR = 0x0000;						// time measurements are based at time 0
 			TA0CCR0 = 0xFF00;					// create a 16mS roll-over period
 			TACTL &= ~TAIFG;					// clear flag before enabling interrupts = good practice
-			TACTL = ID_3 | TASSEL_2 | MC_1;		// Use 1:1 presclar off MCLK and enable interrupts
+			TACTL = ID_3 | TASSEL_2 | MC_1 | TAIE;		// Use 1:1 presclar off MCLK and enable interrupts
 			HIGH_2_LOW; 						// Setup pin interrupr on positive edge
 			break;
 	} // end switch
@@ -168,10 +171,7 @@ __interrupt void pinChange (void) {
 #pragma vector = TIMER0_A1_VECTOR			// This is from the MSP430G2553.h file
 __interrupt void timerOverflow (void) {
 
-	IFG1=0;
-	HIGH_2_LOW;
-	TA0CCR0 = 0xFFFF;
-	TAR = 0;
+	initMSP430();
 
 	packetIndex = 0;
 
