@@ -90,6 +90,7 @@ void main(void) {
 				blockShade = 0x00;
 				break;
 			}
+
 			drawBlock(y, x, blockShade);		//redraw the block
 			packetIndex++;
 			_enable_interrupt();
