@@ -23,11 +23,7 @@ void main(void) {
 	BCSCTL1 = CALBC1_8MHZ;
 	DCOCTL = CALDCO_8MHZ;
 
-	P2SEL  &= ~BIT6;						// Setup P2.6 as GPIO not XIN
-	P2SEL2 &= ~BIT6;
-	P2DIR &= ~BIT6;
-	P2IFG &= ~BIT6;						// Clear any interrupt flag
-	P2IE  |= BIT6;						// Enable PORT 2 interrupt on pin change
+	//setup LCD
 
 
 	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
@@ -94,6 +90,13 @@ void main(void) {
 // and will be used to alert main that we have a new packet.
 // -----------------------------------------------------------------------
 void initMSP430() {
+
+	//setup interrupt pin
+	P2SEL  &= ~BIT6;						// Setup P2.6 as GPIO not XIN
+	P2SEL2 &= ~BIT6;
+	P2DIR &= ~BIT6;
+	P2IFG &= ~BIT6;						// Clear any interrupt flag
+	P2IE  |= BIT6;						// Enable PORT 2 interrupt on pin change
 
 	HIGH_2_LOW;
 
