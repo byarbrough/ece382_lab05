@@ -16,11 +16,24 @@ int8	packetIndex = 0;
 // -----------------------------------------------------------------------
 void main(void) {
 
-	initMSP430();				// Setup MSP to process IR and buttons
-	_enable_interrupt();
-	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
-	P1OUT &= ~(BIT0 | BIT6);			//Turn the LED off
 
+	IFG1=0; 					// clear interrupt flag1
+	WDTCTL=WDTPW+WDTHOLD; 		// stop WD
+
+	BCSCTL1 = CALBC1_8MHZ;
+	DCOCTL = CALDCO_8MHZ;
+
+	P2SEL  &= ~BIT6;						// Setup P2.6 as GPIO not XIN
+	P2SEL2 &= ~BIT6;
+	P2DIR &= ~BIT6;
+	P2IFG &= ~BIT6;						// Clear any interrupt flag
+	P2IE  |= BIT6;						// Enable PORT 2 interrupt on pin change
+
+
+	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
+	P1OUT &= ~(BIT0 | BIT6);			// An turn the LED off
+
+	initMSP430();				// Setup MSP to process IR and buttons
 
 	while(1){
 		if(packetIndex == 34){
@@ -53,13 +66,14 @@ void main(void) {
 				break;
 
 			case LEFT:
-				P1OUT ^= (BIT0 | BIT6);
+				P1OUT |= (BIT0 | BIT6);
 				break;
 
 			case RIGHT:
 				P1OUT ^= (BIT0 | BIT6);
 				break;
 			}
+			packetIndex++;
 			_enable_interrupt();
 		}
 	}
@@ -81,21 +95,7 @@ void main(void) {
 // -----------------------------------------------------------------------
 void initMSP430() {
 
-	IFG1=0; 					// clear interrupt flag1
-	WDTCTL=WDTPW+WDTHOLD; 		// stop WD
-
-	BCSCTL1 = CALBC1_8MHZ;
-	DCOCTL = CALDCO_8MHZ;
-
-	P2SEL  &= ~BIT6;						// Setup P2.6 as GPIO not XIN
-	P2SEL2 &= ~BIT6;
-	P2DIR &= ~BIT6;
-	P2IFG &= ~BIT6;						// Clear any interrupt flag
-	P2IE  |= BIT6;						// Enable PORT 2 interrupt on pin change
-
 	HIGH_2_LOW;
-	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
-	P1OUT &= ~(BIT0 | BIT6);			// An turn the LED off
 
 	TA0CCR0 = 0xFFFF;					// create a  roll-over period
 	TACTL &= ~TAIFG;					// clear flag before enabling interrupts = good practice
