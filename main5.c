@@ -60,40 +60,55 @@ void main(void) {
 				setter >>= 1;						//rotate setter
 				}
 
+			packetIndex++;
+
+			initNokia();
 			switch(result){							//take appropriate action
+
 			case UP:
-				P1OUT ^= BIT0;
+				//P1OUT ^= BIT0;
 				if (y>=1) y=y-1;
 				break;
 
 			case DOWN:
-				P1OUT ^= BIT6;
+				//P1OUT ^= BIT6;
 				if (y<=6) y=y+1;
 				break;
 
 			case LEFT:
-				P1OUT |= (BIT0 | BIT6);
+				//P1OUT |= (BIT0 | BIT6);
 				if (x>=1) x=x-1;
 				break;
 
 			case RIGHT:
-				P1OUT ^= (BIT0 | BIT6);
+				//P1OUT ^= (BIT0 | BIT6);
 				if (x<=10) x=x+1;
 				break;
+
 			case EXIT:
 				clearDisplay();
-				break;
-			case CH_UP:
 				blockShade = 0xFF;
 				break;
-			case CH_DW:
-				blockShade = 0x00;
+
+			case CH_UP:
+				blockShade++;
 				break;
+
+			case CH_DW:
+				blockShade--;
+				break;
+
+			case MUTE:
+				if (blockShade > 0x88){
+					blockShade = 0x00;
+				}
+				else {
+					blockShade = 0xFF;
+				}
 			}
 
 			drawBlock(y, x, blockShade);		//redraw the block
-			packetIndex++;
-			_enable_interrupt();
+			initMSP430();
 		}
 	}
 } // end main
