@@ -58,3 +58,12 @@ __interrupt void timerOverflow (void);
 #define		EXIT	0x0AF508F7
 
 void handlePress();
+
+//added for A functionality
+extern void init();
+extern void initNokia();
+extern void clearDisplay();
+extern void drawBlock(unsigned char row, unsigned char col, unsigned char shade);
+
+
+

@@ -12,6 +12,10 @@
 int16	packetData[34];
 int8	packetIndex = 0;
 
+//position of the block
+unsigned char x, y;
+unsigned char blockShade = 0xFF;
+
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 void main(void) {
@@ -24,7 +28,11 @@ void main(void) {
 	DCOCTL = CALDCO_8MHZ;
 
 	//setup LCD
-
+	init();
+	initNokia();
+	clearDisplay();
+	x = 4;	y = 4;
+	drawBlock(y, x, 0xFF);
 
 	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
 	P1OUT &= ~(BIT0 | BIT6);			// An turn the LED off
@@ -55,20 +63,34 @@ void main(void) {
 			switch(result){							//take appropriate action
 			case UP:
 				P1OUT ^= BIT0;
+				if (y>=1) y=y-1;
 				break;
 
 			case DOWN:
 				P1OUT ^= BIT6;
+				if (y<=6) y=y+1;
 				break;
 
 			case LEFT:
 				P1OUT |= (BIT0 | BIT6);
+				if (x>=1) x=x-1;
 				break;
 
 			case RIGHT:
 				P1OUT ^= (BIT0 | BIT6);
+				if (x<=10) x=x+1;
+				break;
+			case EXIT:
+				clearDisplay();
+				break;
+			case CH_UP:
+				blockShade = 0xFF;
+				break;
+			case CH_DW:
+				blockShade = 0x00;
 				break;
 			}
+			drawBlock(y, x, blockShade);		//redraw the block
 			packetIndex++;
 			_enable_interrupt();
 		}
