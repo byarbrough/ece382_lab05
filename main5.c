@@ -12,14 +12,13 @@
 int16	packetData[34];
 int8	packetIndex = 0;
 
-//position of the block
-unsigned char x, y;
-unsigned char blockShade = 0xFF;
-
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------
 void main(void) {
 
+	//position of the block
+	unsigned char blockShade = 0xFF;
+	unsigned char x, y;
 
 	IFG1=0; 					// clear interrupt flag1
 	WDTCTL=WDTPW+WDTHOLD; 		// stop WD
@@ -32,7 +31,7 @@ void main(void) {
 	initNokia();
 	clearDisplay();
 	x = 4;	y = 4;
-	drawBlock(y, x, 0xFF);
+	drawBlock(y, x, blockShade);
 
 	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
 	P1OUT &= ~(BIT0 | BIT6);			// An turn the LED off
