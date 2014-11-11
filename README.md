@@ -61,9 +61,14 @@ To the left of the dotted line is the HIGH value that the pin stays at since it 
 ####Random Questions
 The lab posed two initial questions. Seeting TACCR0 to 0xFFFF results in a Timer A rollover of 66 ms. Each timer count lasts for 8 clock cycles, or approximately 1 microsecond. 
 
-##Day 2
+##Day 2 - Required Functionality
 
-Day 2 was a fine example of "finding a better way." There was no reason to mess around with all of the measurements that I took on Day 1. Although they helped me to understand how the remote functioned, for actual coding purposes, they would have been a pain to work with. Running the given code generated.
+Day 2 was a fine example of "finding a better way." There was no reason to mess around with all of the measurements that I took on Day 1. Although they helped me to understand how the remote functioned, for actual coding purposes, they would have been a pain to work with. Running the sampel program produced a series of pulse lengths that did not exactly match what I had expected. Instead of reconfiguring everything, I noticed that what should have been a '0' usually generated a pulse in the 400-500's while a '1' was well over 1600. I decided that it would be much easier to simply say that < 1000 was a '0' while the opposite was a '1'. This both saved me time and made the code more robust; I did not have to worry about gorss outliers or worry about taking new measurements for different remotes (see _Day Extra_). 
+
+The next challenge then was to convert the _packetData_ array to a useful binary number. I had to do this because it is illegal to compare an entire array to a 32 bit integer - which is how all of the buttons are defined in the header. The for loop in [lines 44-60](https://github.com/byarbrough/ece382_lab05/blob/master/main5.c#L44-L60) completes this operation.
+It accomplishes this by cerating a result variable and then beggining with the MSB sets or clears the bit accordingly. This is done with some pretty sweet XOR and AND manipulations; it also takes advantage of C's bit rotate operand to advance the setter bit easily.
+
+##Day 3
 
 ##Day Extra
 
@@ -71,6 +76,12 @@ I realized that I had a few extra buttons that weren't being used, so I implemen
 
 I also thought it would be more exciting if I could use my phone to control the device, so that way I could show all of my friends without dragging them to the ECE lab. So here is a screenshot of the phone.
 
+![alt text](https://raw.githubusercontent.com/byarbrough/ece382_lab05/master/phoneRemote.png "Smart Remote App")
+
 All I had to do was run the program, view the _result_ variable, and then update the lookup table!
 
 This show that the program is robust enough to work for any remote that transmits IR data in this same format.
+
+
+##Documentation
+C2C Dusty Wiesner told me that I needed to reinitialize the LCD and then MSP430 for A functionality. This makes sense because the function of pin 2.6 changes each time.
