@@ -47,15 +47,15 @@ __interrupt void timerOverflow (void);
 #define		maxStartPulse		averageStartPulse + 100
 
 //buttons on the Hitachi remote
-#define		UP		0x0AF50EF1
-#define		DOWN	0x0AF58E71
-#define		LEFT	0x0AF5CE31
-#define		RIGHT	0x0AF54EB1
+#define		UP		0x20DF02FD //0x0AF50EF1
+#define		DOWN	0x20DF827D //0x0AF58E71
+#define		LEFT	0x20DFE01F //0x0AF5CE31
+#define		RIGHT	0x20DF609F //0x0AF54EB1
 
-#define		CH_UP	0x0AF59867
-#define		CH_DW	0x0AF518E7
-#define		MUTE	0x0AF5D02F
-#define		EXIT	0x0AF508F7
+#define		CH_UP	0x20DF718E //0x0AF59867
+#define		CH_DW	0x20DFF10E //0x0AF518E7
+#define		MUTE	0x20DF8D72 //0x0AF5D02F
+#define		EXIT	0x20DFDA25 //0x0AF508F7
 
 void handlePress();
 
