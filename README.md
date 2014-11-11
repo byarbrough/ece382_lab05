@@ -2,6 +2,7 @@ ece382_lab05
 ============
 
 [Interrupts - "Remote Control Decoding"](http://ece382.com/labs/lab5/index.html)
+
 The objective of this lab is to process an InfraRed remote signal from a TV remote to manipulate the MSP430; this is a building block to controlling a robot.
 
 ##Day 1
@@ -63,3 +64,13 @@ The lab posed two initial questions. Seeting TACCR0 to 0xFFFF results in a Timer
 ##Day 2
 
 Day 2 was a fine example of "finding a better way." There was no reason to mess around with all of the measurements that I took on Day 1. Although they helped me to understand how the remote functioned, for actual coding purposes, they would have been a pain to work with. Running the given code generated.
+
+##Day Extra
+
+I realized that I had a few extra buttons that weren't being used, so I implemented a way to select any binary value for the block shade. This was simply done my ++ or -- the block color variable every time the channel button was toggled.
+
+I also thought it would be more exciting if I could use my phone to control the device, so that way I could show all of my friends without dragging them to the ECE lab. So here is a screenshot of the phone.
+
+All I had to do was run the program, view the _result_ variable, and then update the lookup table!
+
+This show that the program is robust enough to work for any remote that transmits IR data in this same format.
