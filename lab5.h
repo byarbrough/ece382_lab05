@@ -46,7 +46,8 @@ __interrupt void timerOverflow (void);
 #define		minStartPulse		averageStartPulse - 100
 #define		maxStartPulse		averageStartPulse + 100
 
-//buttons on the Hitachi remote
+//buttons on the Hitachi remote are commented out.
+//buttons for my phone remote are active
 #define		UP		0x20DF02FD //0x0AF50EF1
 #define		DOWN	0x20DF827D //0x0AF58E71
 #define		LEFT	0x20DFE01F //0x0AF5CE31
