@@ -4,7 +4,7 @@
 // Start:	Coulston
 // File:	lab5.c
 // Date:	Fall 2014
-// Purp:
+// Purp:	Implement LCD Etch-a-Sketch with the IR remote
 //-----------------------------------------------------------------
 #include <msp430g2553.h>
 #include "lab5.h"
@@ -23,14 +23,14 @@ void main(void) {
 	IFG1=0; 					// clear interrupt flag1
 	WDTCTL=WDTPW+WDTHOLD; 		// stop WD
 
-	BCSCTL1 = CALBC1_8MHZ;
+	BCSCTL1 = CALBC1_8MHZ;		//calibrate clock
 	DCOCTL = CALDCO_8MHZ;
 
 	//setup LCD
 	init();
 	initNokia();
 	clearDisplay();
-	x = 4;	y = 4;
+	x = 4;	y = 4;						//block position
 	drawBlock(y, x, blockShade);
 
 	P1DIR |= BIT0 | BIT6;				// Enable updates to the LED
@@ -39,8 +39,7 @@ void main(void) {
 	initMSP430();				// Setup MSP to process IR and buttons
 
 	while(1){
-		if(packetIndex == 34){
-
+		if(packetIndex == 34){		//only entered when there is a full signal recieved
 			_disable_interrupt();
 			int32 result = 0;
 			int32 setter = 0x80000000;				//1 in the MSB
@@ -59,9 +58,10 @@ void main(void) {
 				setter >>= 1;						//rotate setter
 				}
 
-			packetIndex++;
+			packetIndex++;							//ensure the loop is not reentered
 
-			initNokia();
+			initNokia();							//prepare to write to LCD
+
 			switch(result){							//take appropriate action
 
 			case UP:
@@ -107,7 +107,7 @@ void main(void) {
 			}
 
 			drawBlock(y, x, blockShade);		//redraw the block
-			initMSP430();
+			initMSP430();						//reprepare to recieve IR
 		}
 	}
 } // end main
@@ -201,11 +201,9 @@ __interrupt void pinChange (void) {
 
 
 // -----------------------------------------------------------------------
-//			0 half-bit	1 half-bit		TIMER A COUNTS		TIMER A COUNTS
-//	Logic 0	xxx
-//	Logic 1
-//	Start
-//	End
+// This interrupt is a way of reseting the reciever when something gets messed up
+// It also resets packetIndex after the final pulse is recieved
+// It is only active while IRPIN is high
 //
 // -----------------------------------------------------------------------
 #pragma vector = TIMER0_A1_VECTOR			// This is from the MSP430G2553.h file

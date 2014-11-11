@@ -3,7 +3,7 @@
 // Start:	Dr. Coulston
 // File:	lab5.h
 // Date:	Fall 2014
-// Purp:	Include file for the MSP430
+// Purp:	Include file for the MSP430 - contains lookup table for remote
 //-----------------------------------------------------------------
 
 //-----------------------------------------------------------------
