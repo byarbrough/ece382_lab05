@@ -99,7 +99,7 @@ Additionally, as documented, I had to make sure to reinitialize the LCD display 
 
 ##Day Extra
 
-I realized that I had a few extra buttons that weren't being used, so I implemented a way to select any binary value for the block shade. This was simply done my ++ or -- the block color variable every time the channel button was toggled.
+I realized that I had a few extra buttons that weren't being used, so I implemented a way to select any binary value for the block shade. This was simply done by ++ or -- the block color variable every time the channel button was toggled.
 
 I also thought it would be more exciting if I could use my phone to control the device, so that way I could show all of my friends without dragging them to the ECE lab. So here is a screenshot of the phone.
 
