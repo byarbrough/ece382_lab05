@@ -49,7 +49,7 @@ In addition to the somewhat arbatrary "short and long" pulses, I took the time t
 | Stop   logic 0 half-pulse   |          0.59         |  0.02  |     4573    |     4935    |
 | Stop   logic 1 half-pulse   |        infinite       |  0.00  |   infinite  |   infinite  |
 
-Analysis of the above table shows that the Data 0's are almost exactly the same length, so can effectively all be treated the same.
+Analysis of the above table shows that the Data 0's are almost exactly the same length, so can effectively all be treated the same. Notice that the time HIGH for a logic one is four times longer then the logic zero.
 
 ####The Start Bit
 Remember how I said that there were _32_ pulses? Well, that isn't entirely true. Look at this logic analyzer photo:
